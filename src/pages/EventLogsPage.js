@@ -1,64 +1,147 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
-function EventLogsPage() {
-  const [eventLogs, setEventLogs] = useState([]);
-  const [search, setSearch] = useState("");
+const eventData = [
+  {
+    eventId: 1,
+    date: "2024/08/21 14:44:01",
+    door: "-",
+    deviceId: "544190479",
+    device: "Contractor 3 Out 544190479 (10.92.14.95)",
+    userGroup: "Contractor",
+    user: "21734 (Ameer NMC)",
+    event: "1:1 authentication succeeded (Card + Finger)",
+  },
+  {
+    eventId: 2,
+    date: "2024/08/21 14:43:58",
+    door: "-",
+    deviceId: "544190484",
+    device: "Contractor 1 Out 544190484 (10.92.14.85)",
+    userGroup: "Contractor",
+    user: "21734 (Ameer NMC)",
+    event: "1:1 authentication succeeded (Card + Finger)",
+  },
+  {
+    eventId: 3,
+    date: "2024/08/21 14:43:56",
+    door: "-",
+    deviceId: "218191",
+    device: "Contractor 2 IN 218191 (10.92.14.78)",
+    userGroup: "Contractor",
+    user: "218191 (Allan Bux NMC)",
+    event: "1:1 authentication succeeded (Card + Finger)",
+  },
+  {
+    eventId: 4,
+    date: "2024/08/21 14:43:51",
+    door: "-",
+    deviceId: "217979",
+    device: "Contractor 2 IN 217979 (10.92.14.79)",
+    userGroup: "Contractor",
+    user: "217979 (Mashooq Ali NMC)",
+    event: "1:1 authentication succeeded (Card + Finger)",
+  },
+  {
+    eventId: 5,
+    date: "2024/08/21 14:39:19",
+    door: "-",
+    deviceId: "544190485",
+    device: "Contractor 3 IN 544190485 (10.92.14.97)",
+    userGroup: "Contractor",
+    user: "216883 (Irfan Ahmed NMC)",
+    event: "1:1 authentication succeeded (Card + Finger)",
+  },
+  {
+    eventId: 6,
+    date: "2024/08/21 14:38:42",
+    door: "-",
+    deviceId: "216891",
+    device: "Contractor 2 IN 216891 (10.92.14.70)",
+    userGroup: "Contractor",
+    user: "216891 (Wee Masayo NMC)",
+    event: "1:1 authentication succeeded (Card + Finger)",
+  },
+  {
+    eventId: 7,
+    date: "2024/08/21 14:38:16",
+    door: "-",
+    deviceId: "217959",
+    device: "Contractor 1 IN 217959 (10.92.14.66)",
+    userGroup: "Contractor",
+    user: "217959 (Sadiq Ali NMC)",
+    event: "1:1 authentication succeeded (Card + Finger)",
+  },
+  {
+    eventId: 8,
+    date: "2024/08/21 14:38:09",
+    door: "-",
+    deviceId: "217989",
+    device: "Contractor 3 IN 217989 (10.92.14.64)",
+    userGroup: "Contractor",
+    user: "217989 (Ilam Din NMC)",
+    event: "1:1 authentication succeeded (Card + Finger)",
+  },
+  {
+    eventId: 9,
+    date: "2024/08/21 14:37:03",
+    door: "QICT Block IN",
+    deviceId: "217553",
+    device: "QICT Block IN 217553 (10.92.14.82)",
+    userGroup: "QICT Block",
+    user: "217553 (Biya Ahmed NMC)",
+    event: "1:1 authentication succeeded (Card + Finger)",
+  },
+  {
+    eventId: 10,
+    date: "2024/08/21 14:36:55",
+    door: "QICT Block OUT",
+    deviceId: "217554",
+    device: "QICT Block OUT 217554 (10.92.14.83)",
+    userGroup: "QICT Block",
+    user: "217554 (Rafiq Khan NMC)",
+    event: "1:1 authentication succeeded (Card + Finger)",
+  },
+];
 
-  // Simulate fetching dummy data
-  useEffect(() => {
-    const dummyLogs = [
-      { logID: 1, deviceID: 1, doorID: 101, userID: 1, date: "2025-10-13", eventType: "CheckIn", timeStamp: "08:00:00" },
-      { logID: 2, deviceID: 2, doorID: 102, userID: 2, date: "2025-10-13", eventType: "CheckOut", timeStamp: "17:00:00" },
-      { logID: 3, deviceID: 3, doorID: 103, userID: 3, date: "2025-10-13", eventType: "CheckIn", timeStamp: "09:15:00" },
-      // Add more logs if needed
-    ];
-    setEventLogs(dummyLogs);
-  }, []);
-
-  // Filter by search (userID or eventType)
-  const filteredLogs = eventLogs.filter(
-    (l) =>
-      l.userID.toString().includes(search) ||
-      l.eventType.toLowerCase().includes(search.toLowerCase())
-  );
-
+const EventLogPage = () => {
   return (
-    <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>Event Logs</h2>
-        <input
-          type="text"
-          className="form-control"
-          style={{ width: "250px" }}
-          placeholder="Search logs..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+    <div className="flex flex-col bg-white rounded-md shadow-md p-4">
+      {/* Header */}
+      <div className="flex justify-between items-center border-b pb-3 mb-3">
+        <h2 className="font-semibold text-lg">Event Log</h2>
       </div>
 
-      <div className="table-responsive">
-        <table className="table table-bordered table-hover">
-          <thead className="table-warning">
+      {/* Table */}
+      <div className="overflow-y-auto border rounded">
+        <table className="min-w-full text-sm border-collapse">
+          <thead className="bg-gray-100 border-b text-left">
             <tr>
-              <th>LogID</th>
-              <th>DeviceID</th>
-              <th>DoorID</th>
-              <th>UserID</th>
-              <th>Date</th>
-              <th>EventType</th>
-              <th>TimeStamp</th>
+              <th className="px-4 py-2 border-r">Event ID</th>
+              <th className="px-4 py-2 border-r">Date</th>
+              <th className="px-4 py-2 border-r">Door</th>
+              <th className="px-4 py-2 border-r">Device ID</th>
+              <th className="px-4 py-2 border-r">Device</th>
+              <th className="px-4 py-2 border-r">User Group</th>
+              <th className="px-4 py-2 border-r">User</th>
+              <th className="px-4 py-2">Event</th>
             </tr>
           </thead>
           <tbody>
-            {filteredLogs.map((l) => (
-              <tr key={l.logID}>
-                <td>{l.logID}</td>
-                <td>{l.deviceID}</td>
-                <td>{l.doorID}</td>
-                <td>{l.userID}</td>
-                <td>{l.date}</td>
-                <td>{l.eventType}</td>
-                <td>{l.timeStamp}</td>
+            {eventData.map((event) => (
+              <tr
+                key={event.eventId}
+                className={`border-b hover:bg-gray-50 transition ${
+                  event.eventId % 2 === 0 ? "bg-gray-50" : "bg-white"
+                }`}
+              >
+                <td className="px-4 py-2">{event.eventId}</td>
+                <td className="px-4 py-2">{event.date}</td>
+                <td className="px-4 py-2">{event.door}</td>
+                <td className="px-4 py-2">{event.deviceId}</td>
+                <td className="px-4 py-2">{event.device}</td>
+                <td className="px-4 py-2">{event.userGroup}</td>
+                <td className="px-4 py-2">{event.user}</td>
+                <td className="px-4 py-2">{event.event}</td>
               </tr>
             ))}
           </tbody>
@@ -66,6 +149,6 @@ function EventLogsPage() {
       </div>
     </div>
   );
-}
+};
 
-export default EventLogsPage;
+export default EventLogPage;

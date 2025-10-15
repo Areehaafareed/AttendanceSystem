@@ -7,6 +7,8 @@ const DevicesPage = () => {
   const [search, setSearch] = useState("");
   const [formDevice, setFormDevice] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+
 
   // Simulated data fetch
   useEffect(() => {
@@ -94,12 +96,14 @@ const DevicesPage = () => {
 
   // Handle edit
   const handleEdit = (device) => {
+    setIsEdit(true);
     setFormDevice(device);
     setShowForm(true);
   };
 
   // Handle add new
   const handleAdd = () => {
+    setIsEdit(false); 
     setFormDevice({
       deviceID: devices.length + 1,
       deviceName: "",
@@ -155,7 +159,7 @@ const DevicesPage = () => {
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-96 shadow-lg max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold mb-4 text-[#281f5f]">
-              {formDevice.deviceID ? "Edit Device" : "Add Device"}
+              {isEdit ? "Edit Device" : "Add Device"}
             </h2>
             <form onSubmit={handleFormSubmit} className="space-y-3">
               {Object.keys(formDevice).map((field) =>

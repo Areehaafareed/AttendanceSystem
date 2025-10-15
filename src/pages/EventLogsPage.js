@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const eventData = [
   {
@@ -104,11 +104,31 @@ const eventData = [
 ];
 
 const EventLogPage = () => {
+  const [search, setSearch] = useState("");
+
+  // Filter data based on search (by user, device, or date)
+  const filteredEvents = eventData.filter(
+    (e) =>
+      e.user.toLowerCase().includes(search.toLowerCase()) ||
+      e.device.toLowerCase().includes(search.toLowerCase()) ||
+      e.date.toLowerCase().includes(search.toLowerCase()) ||
+      e.userGroup.toLowerCase().includes(search.toLowerCase()) ||
+      e.event.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="flex flex-col bg-white rounded-md shadow-md p-4">
-      {/* Header */}
+      {/* Header with Search */}
       <div className="flex justify-between items-center border-b pb-3 mb-3">
         <h2 className="font-semibold text-lg">Event Log</h2>
+        <input
+          type="text"
+          placeholder="Search by user, device, or date..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border px-3 py-2 rounded text-sm focus:outline-none focus:ring focus:ring-indigo-200"
+          style={{ width: "250px" }}
+        />
       </div>
 
       {/* Table */}
@@ -127,7 +147,7 @@ const EventLogPage = () => {
             </tr>
           </thead>
           <tbody>
-            {eventData.map((event) => (
+            {filteredEvents.map((event) => (
               <tr
                 key={event.eventId}
                 className={`border-b hover:bg-gray-50 transition ${

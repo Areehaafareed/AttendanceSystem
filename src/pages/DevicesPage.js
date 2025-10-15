@@ -1,11 +1,15 @@
+
 import React, { useState, useEffect } from "react";
+import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 
 const DevicesPage = () => {
   const [devices, setDevices] = useState([]);
   const [search, setSearch] = useState("");
+  const [formDevice, setFormDevice] = useState(null);
+  const [showForm, setShowForm] = useState(false);
 
-  // Simulate fetching data (dummy API)
- useEffect(() => {
+  // Simulated data fetch
+  useEffect(() => {
     const dummyDevices = [
       {
         deviceID: 1,
@@ -43,6 +47,7 @@ const DevicesPage = () => {
         location: "Side Gate",
         hardwareVersion: "v2.3.0",
       },
+    
       {
         deviceID: 4,
         deviceName: "Fingerprint Scanner 2",
@@ -67,66 +72,6 @@ const DevicesPage = () => {
         location: "Warehouse Exit",
         hardwareVersion: "v2.2.8",
       },
-      {
-        deviceID: 6,
-        deviceName: "Face Recognition 2",
-        deviceAddress: "192.168.1.15",
-        group: "Lobby",
-        deviceType: "Face",
-        status: "Active",
-        devicePort: 51216,
-        productName: "Suprema FaceLite",
-        location: "Reception Area",
-        hardwareVersion: "v2.5.0",
-      },
-      {
-        deviceID: 7,
-        deviceName: "Fingerprint Scanner 3",
-        deviceAddress: "192.168.1.16",
-        group: "Security",
-        deviceType: "Fingerprint",
-        status: "Active",
-        devicePort: 51217,
-        productName: "BioStar 2",
-        location: "Security Room",
-        hardwareVersion: "v2.4.2",
-      },
-      {
-        deviceID: 8,
-        deviceName: "Card Reader 3",
-        deviceAddress: "192.168.1.17",
-        group: "Parking",
-        deviceType: "Card",
-        status: "Inactive",
-        devicePort: 51218,
-        productName: "BioEntry P2",
-        location: "Parking Entry",
-        hardwareVersion: "v2.3.5",
-      },
-      {
-        deviceID: 9,
-        deviceName: "Face Recognition 3",
-        deviceAddress: "192.168.1.18",
-        group: "Main Office",
-        deviceType: "Face",
-        status: "Active",
-        devicePort: 51219,
-        productName: "FaceStation F2",
-        location: "Main Office Entrance",
-        hardwareVersion: "v2.5.3",
-      },
-      {
-        deviceID: 10,
-        deviceName: "Card Reader 4",
-        deviceAddress: "192.168.1.19",
-        group: "Server Room",
-        deviceType: "Card",
-        status: "Active",
-        devicePort: 51220,
-        productName: "BioEntry R2",
-        location: "Server Room Door",
-        hardwareVersion: "v2.4.0",
-      },
     ];
     setDevices(dummyDevices);
   }, []);
@@ -140,61 +85,158 @@ const DevicesPage = () => {
       d.status.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Handle delete
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this device?")) {
+      setDevices(devices.filter((d) => d.deviceID !== id));
+    }
+  };
+
+  // Handle edit
+  const handleEdit = (device) => {
+    setFormDevice(device);
+    setShowForm(true);
+  };
+
+  // Handle add new
+  const handleAdd = () => {
+    setFormDevice({
+      deviceID: devices.length + 1,
+      deviceName: "",
+      deviceAddress: "",
+      group: "",
+      deviceType: "",
+      status: "Active",
+      devicePort: "",
+      productName: "",
+      location: "",
+      hardwareVersion: "",
+    });
+    setShowForm(true);
+  };
+
+  // Handle form submit
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (formDevice.deviceID && devices.find((d) => d.deviceID === formDevice.deviceID)) {
+      // Edit existing
+      setDevices(devices.map((d) => (d.deviceID === formDevice.deviceID ? formDevice : d)));
+    } else {
+      // Add new
+      setDevices([...devices, { ...formDevice, deviceID: devices.length + 1 }]);
+    }
+    setShowForm(false);
+  };
+
   return (
     <div className="flex flex-col bg-white rounded-md shadow-md p-4">
       {/* Header */}
-      <div className="flex justify-between items-center border-b pb-3 mb-3">
-        <h2 className="font-semibold text-lg">Devices</h2>
-        <input
-          type="text"
-          placeholder="Search devices..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="border px-3 py-2 rounded text-sm focus:outline-none focus:ring focus:ring-indigo-200"
-        />
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 mb-3 gap-2">
+        <h2 className="font-bold text-[#281f5f] text-lg">Devices</h2>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="Search devices..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border rounded px-3 py-1 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <button
+            onClick={handleAdd}
+            className="bg-[#281f5f] text-white text-sm px-3 py-1 rounded hover:bg-[#3b2fa1] flex items-center gap-1"
+          >
+            <FaPlus /> Add Device
+          </button>
+        </div>
       </div>
 
+      {/* Form Modal */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-96 shadow-lg max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg font-bold mb-4 text-[#281f5f]">
+              {formDevice.deviceID ? "Edit Device" : "Add Device"}
+            </h2>
+            <form onSubmit={handleFormSubmit} className="space-y-3">
+              {Object.keys(formDevice).map((field) =>
+                field !== "deviceID" ? (
+                  <input
+                    key={field}
+                    type="text"
+                    placeholder={field}
+                    value={formDevice[field]}
+                    onChange={(e) =>
+                      setFormDevice({ ...formDevice, [field]: e.target.value })
+                    }
+                    className="border rounded px-2 py-1 w-full text-sm"
+                  />
+                ) : null
+              )}
+              <div className="flex justify-end gap-2 mt-3">
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="border border-gray-400 text-gray-600 px-3 py-1 rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#281f5f] text-white px-3 py-1 rounded"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Table */}
-      <div className="overflow-y-auto border rounded">
-        <table className="min-w-full text-sm border-collapse">
+      <div className="overflow-x-auto border rounded">
+        <table className="min-w-full text-xs border-collapse">
           <thead className="bg-gray-100 border-b text-left">
             <tr>
-              <th className="px-4 py-2 border-r">Device ID</th>
-              <th className="px-4 py-2 border-r">Device Name</th>
-              <th className="px-4 py-2 border-r">Address</th>
-              <th className="px-4 py-2 border-r">Group</th>
-              <th className="px-4 py-2 border-r">Device Type</th>
-              <th className="px-4 py-2 border-r">Status</th>
-              <th className="px-4 py-2 border-r">Port</th>
-              <th className="px-4 py-2 border-r">Product Name</th>
-              <th className="px-4 py-2 border-r">Location</th>
-              <th className="px-4 py-2">Hardware Version</th>
+              {[
+                "Device ID",
+                "Device Name",
+                "Address",
+                "Group",
+                "Device Type",
+                "Status",
+                "Port",
+                "Product Name",
+                "Location",
+                "Hardware Version",
+                "Actions",
+              ].map((header) => (
+                <th key={header} className="px-2 py-2 border-r font-semibold">
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {filteredDevices.map((d) => (
+            {filteredDevices.map((d, index) => (
               <tr
                 key={d.deviceID}
                 className={`border-b hover:bg-gray-50 transition ${
-                  d.deviceID % 2 === 0 ? "bg-gray-50" : "bg-white"
+                  index % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
-                <td className="px-4 py-2">{d.deviceID}</td>
-                <td className="px-4 py-2">{d.deviceName}</td>
-                <td className="px-4 py-2">{d.deviceAddress}</td>
-                <td className="px-4 py-2">{d.group}</td>
-                <td className="px-4 py-2">{d.deviceType}</td>
-                <td
-                  className={`px-4 py-2 font-medium ${
-                    d.status === "Active" ? "text-green-600" : "text-red-500"
-                  }`}
-                >
-                  {d.status}
+                {Object.keys(d).map((key) => (
+                  <td key={key} className="px-2 py-1">
+                    {d[key]}
+                  </td>
+                ))}
+                <td className="px-2 py-1 flex justify-center gap-2">
+                  <button onClick={() => handleEdit(d)}>
+                    <FaEdit className="text-blue-600 hover:text-blue-800" />
+                  </button>
+                  <button onClick={() => handleDelete(d.deviceID)}>
+                    <FaTrash className="text-red-600 hover:text-red-800" />
+                  </button>
                 </td>
-                <td className="px-4 py-2">{d.devicePort}</td>
-                <td className="px-4 py-2">{d.productName}</td>
-                <td className="px-4 py-2">{d.location}</td>
-                <td className="px-4 py-2">{d.hardwareVersion}</td>
               </tr>
             ))}
           </tbody>

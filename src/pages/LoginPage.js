@@ -1,3 +1,5 @@
+
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -6,6 +8,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -13,10 +16,16 @@ function LoginPage() {
     // Dummy login validation
     if (email === "admin@example.com" && password === "1234") {
       setError("");
-      alert("Login successful!");
-      navigate("/dashboard"); // Redirect to dashboard
+      setSuccess("Logged in successfully!");
+
+      // Hide success message after 2 seconds and navigate
+      setTimeout(() => {
+        setSuccess("");
+        navigate("/dashboard");
+      }, 2000);
     } else {
       setError("Invalid email or password");
+      setSuccess("");
     }
   };
 
@@ -33,6 +42,7 @@ function LoginPage() {
           borderRadius: "10px",
           boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
           backgroundColor: "#ffffff",
+          position: "relative",
         }}
       >
         <h2 className="text-center mb-4" style={{ color: "#6f42c1" }}>
@@ -40,6 +50,8 @@ function LoginPage() {
         </h2>
         <form onSubmit={handleLogin}>
           {error && <div className="alert alert-danger">{error}</div>}
+          {success && <div className="alert alert-success">{success}</div>}
+
           <div className="mb-3">
             <label>Email</label>
             <input
@@ -51,6 +63,7 @@ function LoginPage() {
               required
             />
           </div>
+
           <div className="mb-3">
             <label>Password</label>
             <input
@@ -62,9 +75,11 @@ function LoginPage() {
               required
             />
           </div>
+
           <button type="submit" className="btn btn-primary w-100">
             Login
           </button>
+
           <p className="mt-3 text-center">
             Don’t have an account? <a href="/signup">Sign Up</a>
           </p>
@@ -75,3 +90,4 @@ function LoginPage() {
 }
 
 export default LoginPage;
+

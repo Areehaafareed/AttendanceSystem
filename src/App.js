@@ -10,6 +10,10 @@ import UsersPage from "./pages/UsersPage";
 import DevicesPage from "./pages/DevicesPage";
 import AttendancePage from "./pages/AttendancePage";
 import EventLogsPage from "./pages/EventLogsPage";
+import UserDetailsPage from "./pages/UserDetailsPage";
+import EventLogsReport from "./pages/reports/EventLogsReport";
+import AttendanceReport from "./pages/reports/AttendanceReport";
+import DeviceListReport from "./pages/reports/DeviceListReport";
 
 function Layout() {
   const location = useLocation();
@@ -35,8 +39,8 @@ function Layout() {
           marginLeft: hideSidebar
             ? 0
             : sidebarOpen
-            ? sidebarWidthOpen
-            : sidebarWidthClosed,
+              ? sidebarWidthOpen
+              : sidebarWidthClosed,
         }}
       >
         <Routes>
@@ -45,9 +49,14 @@ function Layout() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/users" element={<UsersPage />} />
+          <Route path="/user/:id" element={<UserDetailsPage />} />
           <Route path="/devices" element={<DevicesPage />} />
           <Route path="/attendance" element={<AttendancePage />} />
           <Route path="/eventlogs" element={<EventLogsPage />} />
+          {/* Reports */}
+          <Route path="/reports/eventlogs" element={<EventLogsReport />} />
+          <Route path="/reports/attendance" element={<AttendanceReport/>} />
+          <Route path="/reports/devicelist" element={<DeviceListReport />} />
         </Routes>
       </div>
     </div>

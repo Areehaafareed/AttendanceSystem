@@ -111,7 +111,7 @@ const AttendancePage = () => {
     <div className="flex flex-col bg-white rounded-md shadow-md p-4">
       {/* Header */}
       <div className="flex justify-between items-center border-b pb-3 mb-3">
-        <h2 className="font-semibold text-lg">Time Attendance</h2>
+        <h2 className="font-bold text-[#281f5f] text-lg">Time Attendance</h2>
         <input
           type="text"
           placeholder="Search by PF Number or Date..."

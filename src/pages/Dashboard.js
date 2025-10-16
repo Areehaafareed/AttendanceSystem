@@ -1,154 +1,4 @@
-// import React from "react";
-// import { FaUsers, FaCalendarCheck, FaUserTimes, FaUmbrellaBeach } from "react-icons/fa";
-// import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
-// const Dashboard = () => {
-//   // Dummy data for the chart
-//   const attendanceData = [
-//     { date: "Oct 1", present: 45, absent: 5 },
-//     { date: "Oct 2", present: 42, absent: 8 },
-//     { date: "Oct 3", present: 47, absent: 3 },
-//     { date: "Oct 4", present: 40, absent: 10 },
-//     { date: "Oct 5", present: 44, absent: 6 },
-//     { date: "Oct 6", present: 48, absent: 2 },
-//     { date: "Oct 7", present: 46, absent: 4 },
-//   ];
-
-//   const statsMock = [
-//   { icon: <FaUser />, label: 'User', count: 7639 },
-//   { icon: <FaSmile />, label: 'Visual Face', count: 0 },
-//   { icon: <FaSmile />, label: 'Face', count: 0 },
-//   { icon: <FaFingerprint />, label: 'Fingerprint', count: 4505 },
-//   { icon: <FaIdCard />, label: 'Card', count: 11652 },
-//   { icon: <FaMobileAlt />, label: 'Device', count: '39/1000' },
-//   { icon: <FaDoorOpen />, label: 'Door', count: '0/1000' },
-//   { icon: <FaUsers />, label: 'Access Group', count: 0 },
-// ];
-
-//   // Dummy summary stats
-//   const totalUsers = 120;
-//   const presentToday = 96;
-//   const onLeave = 10;
-//   const absent = 14;
-
-//   return (
-//     <div className="p-6 bg-gray-50 min-h-screen">
-//       {/* Header */}
-//       <h2 className="text-2xl font-bold mb-6">Dashboard Overview</h2>
-
-//       {/* Summary Cards */}
-//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-//         <div className="bg-white rounded-xl shadow-md p-5 flex items-center justify-between border-l-4 border-blue-500">
-//           <div>
-//             <p className="text-sm text-gray-500">Total Users</p>
-//             <h3 className="text-2xl font-semibold">{totalUsers}</h3>
-//           </div>
-//           <FaUsers className="text-blue-500 text-3xl" />
-//         </div>
-
-//         <div className="bg-white rounded-xl shadow-md p-5 flex items-center justify-between border-l-4 border-green-500">
-//           <div>
-//             <p className="text-sm text-gray-500">Present Today</p>
-//             <h3 className="text-2xl font-semibold">{presentToday}</h3>
-//           </div>
-//           <FaCalendarCheck className="text-green-500 text-3xl" />
-//         </div>
-
-//         <div className="bg-white rounded-xl shadow-md p-5 flex items-center justify-between border-l-4 border-yellow-500">
-//           <div>
-//             <p className="text-sm text-gray-500">On Leave</p>
-//             <h3 className="text-2xl font-semibold">{onLeave}</h3>
-//           </div>
-//           <FaUmbrellaBeach className="text-yellow-500 text-3xl" />
-//         </div>
-
-//         <div className="bg-white rounded-xl shadow-md p-5 flex items-center justify-between border-l-4 border-red-500">
-//           <div>
-//             <p className="text-sm text-gray-500">Absent</p>
-//             <h3 className="text-2xl font-semibold">{absent}</h3>
-//           </div>
-//           <FaUserTimes className="text-red-500 text-3xl" />
-//         </div>
-//       </div>
-
-//       <div className="row">
-//   {stats.map((s, i) => (
-//     <div className="col-6 col-md-3 text-center mb-3" key={i}>
-//       <div
-//         className="border border-danger rounded-circle p-3 text-danger mx-auto"
-//         style={{ width: '60px', height: '60px' }}
-//       >
-//         {s.icon}
-//       </div>
-//       <div className="mt-2">{s.label}</div>
-//       <div className="fw-bold">{s.count}</div>
-//     </div>
-//   ))}
-// </div>
-
-
-//       {/* Attendance Chart */}
-//       <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-//         <h3 className="text-lg font-semibold mb-4">Weekly Attendance Trend</h3>
-//         <ResponsiveContainer width="100%" height={300}>
-//           <LineChart data={attendanceData}>
-//             <CartesianGrid strokeDasharray="3 3" />
-//             <XAxis dataKey="date" />
-//             <YAxis />
-//             <Tooltip />
-//             <Line type="monotone" dataKey="present" stroke="#10B981" strokeWidth={3} name="Present" />
-//             <Line type="monotone" dataKey="absent" stroke="#EF4444" strokeWidth={3} name="Absent" />
-//           </LineChart>
-//         </ResponsiveContainer>
-//       </div>
-
-//       {/* Recent Activity Table */}
-//       <div className="bg-white rounded-xl shadow-md p-6">
-//         <h3 className="text-lg font-semibold mb-4">Recent Activities</h3>
-//         <table className="min-w-full text-sm border-collapse">
-//           <thead className="bg-gray-100 border-b text-left">
-//             <tr>
-//               <th className="px-4 py-2 border-r">Date</th>
-//               <th className="px-4 py-2 border-r">User</th>
-//               <th className="px-4 py-2 border-r">Department</th>
-//               <th className="px-4 py-2 border-r">Status</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {[
-//               { date: "2024/10/14", user: "Ameer NMC", dept: "Tech", status: "Present" },
-//               { date: "2024/10/14", user: "Sadiq Ali", dept: "Operations", status: "Absent" },
-//               { date: "2024/10/14", user: "Irfan Ahmed", dept: "Supervisor", status: "Leave" },
-//               { date: "2024/10/14", user: "Sana Ahmed", dept: "Engineering", status: "Present" },
-//             ].map((activity, i) => (
-//               <tr
-//                 key={i}
-//                 className={`border-b ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
-//               >
-//                 <td className="px-4 py-2">{activity.date}</td>
-//                 <td className="px-4 py-2">{activity.user}</td>
-//                 <td className="px-4 py-2">{activity.dept}</td>
-//                 <td
-//                   className={`px-4 py-2 font-medium ${
-//                     activity.status === "Present"
-//                       ? "text-green-600"
-//                       : activity.status === "Leave"
-//                       ? "text-yellow-600"
-//                       : "text-red-600"
-//                   }`}
-//                 >
-//                   {activity.status}
-//                 </td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Dashboard;
 
 // import React, { useEffect, useState } from 'react';
 // import { Line } from 'react-chartjs-2';
@@ -328,7 +178,6 @@ import {
   FaFingerprint,
   FaIdCard,
   FaMobileAlt,
-  FaDoorOpen,
 } from "react-icons/fa";
 import {
   LineChart,
@@ -341,21 +190,13 @@ import {
 } from "recharts";
 import { Link } from "react-router-dom";
 
-const monthlyAttendanceData = [
-  { month: "Jan", present: 22, absent: 3 },
-  { month: "Feb", present: 20, absent: 5 },
-  { month: "Mar", present: 23, absent: 2 },
-  { month: "Apr", present: 21, absent: 4 },
-  { month: "May", present: 24, absent: 1 },
-  { month: "Jun", present: 22, absent: 3 },
-  { month: "Jul", present: 20, absent: 5 },
-  { month: "Aug", present: 23, absent: 2 },
-  { month: "Sep", present: 21, absent: 4 },
-  { month: "Oct", present: 24, absent: 1 },
+const weeklyAttendanceData = [
+  { week: "Week 1", present: 42, absent: 8 },
+  { week: "Week 2", present: 38, absent: 12 },
+  { week: "Week 3", present: 45, absent: 5 },
+  { week: "Week 4", present: 40, absent: 10 },
 ];
 
-
-// Dummy summary stats
 const totalUsers = 120;
 const presentToday = 96;
 const onLeave = 10;
@@ -378,7 +219,7 @@ const CircularProgress = ({ size = 60, strokeWidth = 6, progress }) => {
         cy={size / 2}
       />
       <circle
-        stroke="#281f5f" // Theme blue progress
+        stroke="#281f5f"
         fill="transparent"
         strokeWidth={strokeWidth}
         strokeLinecap="round"
@@ -393,14 +234,13 @@ const CircularProgress = ({ size = 60, strokeWidth = 6, progress }) => {
   );
 };
 
+// ✅ Removed Door and Access Group
 const usageStats = [
   { icon: <FaUser className="text-[#281f5f]" />, label: "User", count: 76, maxCount: 100, link: "/users" },
   { icon: <FaSmile className="text-[#281f5f]" />, label: "Visual Face", count: 30, maxCount: 100, link: "/visual-face" },
   { icon: <FaFingerprint className="text-[#281f5f]" />, label: "Fingerprint", count: 45, maxCount: 100, link: "/fingerprint" },
   { icon: <FaIdCard className="text-[#281f5f]" />, label: "Card", count: 116, maxCount: 200, link: "/card" },
   { icon: <FaMobileAlt className="text-[#281f5f]" />, label: "Device", count: 49, maxCount: 100, link: "/device" },
-  { icon: <FaDoorOpen className="text-[#281f5f]" />, label: "Door", count: 0, maxCount: 100, link: "/door" },
-  { icon: <FaUsers className="text-[#281f5f]" />, label: "Access Group", count: 0, maxCount: 100, link: "/access-group" },
 ];
 
 const Dashboard = () => {
@@ -419,9 +259,7 @@ const Dashboard = () => {
         >
           <div>
             <p className="text-sm text-gray-600">Total Users</p>
-            <h3 className="text-2xl font-semibold text-[#281f5f]">
-              {totalUsers}
-            </h3>
+            <h3 className="text-2xl font-semibold text-[#281f5f]">{totalUsers}</h3>
           </div>
           <FaUsers className="text-[#281f5f] text-3xl" />
         </Link>
@@ -432,9 +270,7 @@ const Dashboard = () => {
         >
           <div>
             <p className="text-sm text-gray-600">Present Today</p>
-            <h3 className="text-2xl font-semibold text-green-600">
-              {presentToday}
-            </h3>
+            <h3 className="text-2xl font-semibold text-green-600">{presentToday}</h3>
           </div>
           <FaCalendarCheck className="text-green-500 text-3xl" />
         </Link>
@@ -445,9 +281,7 @@ const Dashboard = () => {
         >
           <div>
             <p className="text-sm text-gray-600">On Leave</p>
-            <h3 className="text-2xl font-semibold text-[#281f5f]">
-              {onLeave}
-            </h3>
+            <h3 className="text-2xl font-semibold text-[#281f5f]">{onLeave}</h3>
           </div>
           <FaUmbrellaBeach className="text-[#281f5f] text-3xl" />
         </Link>
@@ -464,34 +298,30 @@ const Dashboard = () => {
         </Link>
       </div>
 
-      {/* Usage Stats */}
-      <div className="bg-white rounded-xl shadow-md p-4 mb-8 overflow-x-auto">
+      {/* ✅ Cleaned Usage Stats Section */}
+      <div className="bg-white rounded-xl shadow-md p-6 mb-8">
         <h3 className="text-lg font-semibold mb-4 text-[#281f5f]">
           Usage Stats
         </h3>
-        <div className="flex space-x-6 min-w-max">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 justify-items-center">
           {usageStats.map((stat, idx) => {
-            const progress = Math.min(
-              100,
-              Math.round((stat.count / stat.maxCount) * 100)
-            );
+            const progress = Math.min(100, Math.round((stat.count / stat.maxCount) * 100));
             return (
               <Link
                 to={stat.link}
                 key={idx}
-                className="flex flex-col items-center p-2 cursor-pointer hover:shadow-md rounded transition"
-                style={{ minWidth: 80 }}
+                className="flex flex-col items-center hover:scale-105 transition-transform duration-300"
               >
-                <div className="relative w-16 h-16">
+                <div className="relative w-16 h-16 mb-2">
                   <CircularProgress progress={progress} />
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#281f5f] text-3xl">
+                  <div className="absolute inset-0 flex items-center justify-center text-[#281f5f] text-2xl">
                     {stat.icon}
                   </div>
                 </div>
-                <div className="mt-1 text-sm font-bold text-center text-[#281f5f]">
+                <div className="text-sm font-bold text-[#281f5f] text-center">
                   {stat.label}
                 </div>
-                <div className="text-xs font-bold text-center text-gray-600">
+                <div className="text-xs font-semibold text-gray-600 text-center">
                   {stat.count}
                 </div>
               </Link>
@@ -501,42 +331,25 @@ const Dashboard = () => {
       </div>
 
       {/* Attendance Chart */}
-
       <div className="bg-white rounded-xl shadow-md p-6 mb-8">
         <h3 className="text-lg font-semibold mb-4 text-[#281f5f]">
-          Monthly Attendance Trend
+          Weekly Attendance Trend
         </h3>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={monthlyAttendanceData}>
+          <LineChart data={weeklyAttendanceData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
+            <XAxis dataKey="week" />
             <YAxis />
             <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="present"
-              stroke="#10B981"
-              strokeWidth={3}
-              name="Present"
-            />
-            <Line
-              type="monotone"
-              dataKey="absent"
-              stroke="#EF4444"
-              strokeWidth={3}
-              name="Absent"
-            />
+            <Line type="monotone" dataKey="present" stroke="#10B981" strokeWidth={3} name="Present" dot={{ r: 5 }} />
+            <Line type="monotone" dataKey="absent" stroke="#EF4444" strokeWidth={3} name="Absent" dot={{ r: 5 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
-
-
       {/* Recent Activity Table */}
       <div className="bg-white rounded-xl shadow-md p-6">
-        <h3 className="text-lg font-semibold mb-4 text-[#281f5f]">
-          Recent Activities
-        </h3>
+        <h3 className="text-lg font-semibold mb-4 text-[#281f5f]">Recent Activities</h3>
         <table className="min-w-full text-sm border-collapse">
           <thead className="bg-[#281f5f]/10 border-b text-left text-[#281f5f]">
             <tr>
@@ -553,20 +366,18 @@ const Dashboard = () => {
               { date: "2024/10/14", user: "Irfan Ahmed", dept: "Supervisor", status: "Leave" },
               { date: "2024/10/14", user: "Sana Ahmed", dept: "Engineering", status: "Present" },
             ].map((activity, i) => (
-              <tr
-                key={i}
-                className={`border-b ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
-              >
+              <tr key={i} className={`border-b ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
                 <td className="px-4 py-2">{activity.date}</td>
                 <td className="px-4 py-2">{activity.user}</td>
                 <td className="px-4 py-2">{activity.dept}</td>
                 <td
-                  className={`px-4 py-2 font-medium ${activity.status === "Present"
-                    ? "text-green-600"
-                    : activity.status === "Leave"
+                  className={`px-4 py-2 font-medium ${
+                    activity.status === "Present"
+                      ? "text-green-600"
+                      : activity.status === "Leave"
                       ? "text-yellow-600"
                       : "text-red-600"
-                    }`}
+                  }`}
                 >
                   {activity.status}
                 </td>

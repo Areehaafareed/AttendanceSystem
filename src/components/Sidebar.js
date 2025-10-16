@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { BiChat } from "react-icons/bi";
-import { FaChevronDown, FaChevronRight } from "react-icons/fa";
-import { FaGears } from "react-icons/fa6";
+import { FaChevronDown, FaChevronRight, FaFileAlt } from "react-icons/fa";
 import { FiTable } from "react-icons/fi";
 import { GoGraph } from "react-icons/go";
 import { MdSpaceDashboard } from "react-icons/md";
@@ -15,19 +14,11 @@ import logo from "../assets/dp-removebg.png";
 
 const Sidebar = ({ open, setSidebarOpen }) => {
   const [subMenus, setSubMenus] = useState({});
-  const location = useLocation(); // ✅ to detect current active route
+  const location = useLocation();
 
   const toggleSubMenu = (menuKey) => {
-    setSubMenus((prev) => {
-      // If the clicked submenu is already open, close it
-      if (prev[menuKey]) {
-        return {};
-      }
-      // Otherwise, open the clicked submenu and close others
-      return { [menuKey]: true };
-    });
+    setSubMenus((prev) => (prev[menuKey] ? {} : { [menuKey]: true }));
   };
-
 
   const Menus = [
     { title: "Dashboard", icon: <MdSpaceDashboard />, path: "/dashboard" },
@@ -37,19 +28,13 @@ const Sidebar = ({ open, setSidebarOpen }) => {
     { title: "Event Logs", icon: <TiCalendar />, path: "/eventlogs" },
     {
       title: "Reports",
-      icon: <TiCalendar />,
+      icon: <FaFileAlt />,
       subMenu: [
         { name: "Event Logs", path: "/reports/eventlogs" },
         { name: "Attendance", path: "/reports/attendance" },
         { name: "Device List", path: "/reports/devicelist" },
       ],
       key: "reports",
-    },
-    {
-      title: "Settings",
-      icon: <FaGears />,
-      subMenu: ["General", "Security", "Notifications"],
-      key: "settings",
     },
   ];
 
@@ -66,14 +51,10 @@ const Sidebar = ({ open, setSidebarOpen }) => {
             } transition-all`}
           onClick={() => setSidebarOpen(!open)}
         >
-          {open ? (
-            <TbLayoutSidebarLeftExpand />
-          ) : (
-            <TbLayoutSidebarLeftCollapse />
-          )}
+          {open ? <TbLayoutSidebarLeftExpand /> : <TbLayoutSidebarLeftCollapse />}
         </div>
 
-        {/* === Logo Section (adjusted) === */}
+        {/* Logo */}
         <div className="flex gap-x-4 items-center mt-3 ml-2">
           <img
             src={logo}
@@ -81,8 +62,7 @@ const Sidebar = ({ open, setSidebarOpen }) => {
             className="w-16 h-16 rounded-full object-cover"
           />
           <h1
-            className={`text-zinc-50 font-semibold text-xl mt-4 ${!open && "hidden"
-              }`}
+            className={`text-zinc-50 font-semibold text-xl mt-4 ${!open && "hidden"}`}
           >
             Admin Panel
           </h1>
@@ -92,6 +72,7 @@ const Sidebar = ({ open, setSidebarOpen }) => {
         <ul className={`${open ? "" : "flex flex-col mt-6"}`}>
           {Menus.map((Menu, index) => (
             <li key={index} className="w-full">
+              {/* Regular Menu Links */}
               {Menu.path ? (
                 <Link
                   to={Menu.path}
@@ -105,8 +86,9 @@ const Sidebar = ({ open, setSidebarOpen }) => {
                   {open && <span className="truncate">{Menu.title}</span>}
                 </Link>
               ) : (
+                // ✅ Fixed alignment for submenu parent (like Reports)
                 <div
-                  className={`flex items-center justify-between ${open ? "p-3" : "p-3 justify-center"
+                  className={`flex items-center ${open ? "justify-between p-3" : "justify-center p-3"
                     } rounded-md text-zinc-50 hover:bg-zinc-800 cursor-pointer`}
                   onClick={() => toggleSubMenu(Menu.key)}
                 >
@@ -117,7 +99,7 @@ const Sidebar = ({ open, setSidebarOpen }) => {
                     <span className="text-lg flex-shrink-0">{Menu.icon}</span>
                     {open && (
                       <span
-                        className={`${Menu.title === "Reports" || Menu.title === "Settings"
+                        className={`${Menu.title === "Reports"
                           ? "underline decoration-white underline-offset-4"
                           : ""
                           }`}
@@ -125,8 +107,8 @@ const Sidebar = ({ open, setSidebarOpen }) => {
                         {Menu.title}
                       </span>
                     )}
-
                   </div>
+                  {/* Only show chevron when open */}
                   {open &&
                     (subMenus[Menu.key] ? (
                       <FaChevronDown />
@@ -141,27 +123,19 @@ const Sidebar = ({ open, setSidebarOpen }) => {
                 <ul className="pl-10 text-zinc-300">
                   {Menu.subMenu.map((subItem, idx) => (
                     <li key={idx} className="py-2">
-                      {typeof subItem === "object" && subItem.path ? (
-                        <Link
-                          to={subItem.path}
-                          className={`block px-3 py-2 no-underline rounded-md transition-all duration-200 
-    ${location.pathname === subItem.path
-                              ? "bg-zinc-800/40 text-white"
-                              : "text-zinc-300 hover:bg-[#140766] hover:text-white"
-                            }`}
-                        >
-                          {subItem.name}
-                        </Link>
-
-                      ) : (
-                        <span className="hover:text-white">{subItem.name || subItem}</span>
-                      )}
+                      <Link
+                        to={subItem.path}
+                        className={`block px-3 py-2 rounded-md transition-all duration-200 ${location.pathname === subItem.path
+                          ? "bg-zinc-800/40 text-white"
+                          : "text-zinc-300 hover:bg-[#140766] hover:text-white"
+                          }`}
+                      >
+                        {subItem.name}
+                      </Link>
                     </li>
                   ))}
                 </ul>
               )}
-
-
             </li>
           ))}
         </ul>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 
@@ -9,128 +8,97 @@ const DevicesPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
+  // ✅ 1. Fetch devices from backend (direct URL)
+  const fetchDevices = async () => {
+  try {
+    const response = await fetch("http://localhost:8094/biostar/devices");
+    if (!response.ok) throw new Error("Failed to fetch devices");
+    const data = await response.json();
+    setDevices(data);
+  } catch (error) {
+    console.error("Error fetching devices:", error);
+  }
+};
 
-  // Simulated data fetch
   useEffect(() => {
-    const dummyDevices = [
-      {
-        deviceID: 1,
-        deviceName: "Fingerprint Scanner 1",
-        deviceAddress: "192.168.1.10",
-        group: "Entrance",
-        deviceType: "Fingerprint",
-        status: "Active",
-        devicePort: 51211,
-        productName: "BioStar 2",
-        location: "Main Gate",
-        hardwareVersion: "v2.3.1",
-      },
-      {
-        deviceID: 2,
-        deviceName: "Card Reader 1",
-        deviceAddress: "192.168.1.11",
-        group: "Exit",
-        deviceType: "Card",
-        status: "Active",
-        devicePort: 51212,
-        productName: "BioStar 2",
-        location: "Back Gate",
-        hardwareVersion: "v2.3.1",
-      },
-      {
-        deviceID: 3,
-        deviceName: "Face Recognition 1",
-        deviceAddress: "192.168.1.12",
-        group: "Entrance",
-        deviceType: "Face",
-        status: "Inactive",
-        devicePort: 51213,
-        productName: "BioStar 2",
-        location: "Side Gate",
-        hardwareVersion: "v2.3.0",
-      },
-    
-      {
-        deviceID: 4,
-        deviceName: "Fingerprint Scanner 2",
-        deviceAddress: "192.168.1.13",
-        group: "Admin Block",
-        deviceType: "Fingerprint",
-        status: "Active",
-        devicePort: 51214,
-        productName: "Suprema BioLite N2",
-        location: "Admin Lobby",
-        hardwareVersion: "v2.4.1",
-      },
-      {
-        deviceID: 5,
-        deviceName: "Card Reader 2",
-        deviceAddress: "192.168.1.14",
-        group: "Warehouse",
-        deviceType: "Card",
-        status: "Inactive",
-        devicePort: 51215,
-        productName: "BioStar 2",
-        location: "Warehouse Exit",
-        hardwareVersion: "v2.2.8",
-      },
-    ];
-    setDevices(dummyDevices);
+    fetchDevices();
   }, []);
 
-  // Filter devices by search
-  const filteredDevices = devices.filter(
-    (d) =>
-      d.deviceName.toLowerCase().includes(search.toLowerCase()) ||
-      d.deviceAddress.toLowerCase().includes(search.toLowerCase()) ||
-      d.deviceType.toLowerCase().includes(search.toLowerCase()) ||
-      d.status.toLowerCase().includes(search.toLowerCase())
-  );
-
-  // Handle delete
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this device?")) {
-      setDevices(devices.filter((d) => d.deviceID !== id));
+  // ✅ 2. Handle delete device
+  const handleDelete = async (deviceID) => {
+    if (!window.confirm("Are you sure you want to delete this device?")) return;
+    try {
+      const response = await fetch(
+        `http://localhost:8094/biostar/devices/${deviceID}`,
+        { method: "DELETE" }
+      );
+      if (response.ok) {
+        setDevices(devices.filter((d) => d.deviceID !== deviceID));
+      } else {
+        alert("Failed to delete device");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
     }
   };
 
-  // Handle edit
+  // ✅ 3. Handle edit device
   const handleEdit = (device) => {
     setIsEdit(true);
     setFormDevice(device);
     setShowForm(true);
   };
 
-  // Handle add new
+  // ✅ 4. Handle add new device
   const handleAdd = () => {
-    setIsEdit(false); 
+    setIsEdit(false);
     setFormDevice({
-      deviceID: devices.length + 1,
+      deviceID: "",
       deviceName: "",
       deviceAddress: "",
       group: "",
       deviceType: "",
-      status: "Active",
-      devicePort: "",
-      productName: "",
       location: "",
+      status: "Active",
+      productName: "",
       hardwareVersion: "",
+      devicePort: "",
     });
     setShowForm(true);
   };
 
-  // Handle form submit
-  const handleFormSubmit = (e) => {
+  // ✅ 5. Handle form submit (POST or PUT)
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (formDevice.deviceID && devices.find((d) => d.deviceID === formDevice.deviceID)) {
-      // Edit existing
-      setDevices(devices.map((d) => (d.deviceID === formDevice.deviceID ? formDevice : d)));
-    } else {
-      // Add new
-      setDevices([...devices, { ...formDevice, deviceID: devices.length + 1 }]);
+    try {
+      const method = isEdit ? "PUT" : "POST";
+      const url = isEdit
+        ? `http://localhost:8094/biostar/devices/${formDevice.deviceID}`
+        : "http://localhost:8094/biostar/devices";
+
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formDevice),
+      });
+
+      if (!response.ok) throw new Error("Failed to save device");
+
+      await fetchDevices(); // refresh table
+      setShowForm(false);
+    } catch (error) {
+      console.error("Save error:", error);
     }
-    setShowForm(false);
   };
+
+  // ✅ 6. Filter by search input
+  const filteredDevices = devices.filter(
+    (d) =>
+      d.deviceName?.toLowerCase().includes(search.toLowerCase()) ||
+      d.deviceAddress?.toLowerCase().includes(search.toLowerCase()) ||
+      d.deviceType?.toLowerCase().includes(search.toLowerCase()) ||
+      d.status?.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="flex flex-col bg-white rounded-md shadow-md p-4">
@@ -174,7 +142,18 @@ const DevicesPage = () => {
                     }
                     className="border rounded px-2 py-1 w-full text-sm"
                   />
-                ) : null
+                ) : (
+                  isEdit && (
+                    <input
+                      key="deviceID"
+                      type="text"
+                      placeholder="Device ID"
+                      value={formDevice.deviceID}
+                      readOnly
+                      className="border rounded px-2 py-1 w-full text-sm bg-gray-100"
+                    />
+                  )
+                )
               )}
               <div className="flex justify-end gap-2 mt-3">
                 <button
@@ -228,11 +207,16 @@ const DevicesPage = () => {
                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
-                {Object.keys(d).map((key) => (
-                  <td key={key} className="px-2 py-1">
-                    {d[key]}
-                  </td>
-                ))}
+                <td className="px-2 py-1">{d.deviceID}</td>
+                <td className="px-2 py-1">{d.deviceName}</td>
+                <td className="px-2 py-1">{d.deviceAddress}</td>
+                <td className="px-2 py-1">{d.group}</td>
+                <td className="px-2 py-1">{d.deviceType}</td>
+                <td className="px-2 py-1">{d.status}</td>
+                <td className="px-2 py-1">{d.devicePort}</td>
+                <td className="px-2 py-1">{d.productName}</td>
+                <td className="px-2 py-1">{d.location}</td>
+                <td className="px-2 py-1">{d.hardwareVersion}</td>
                 <td className="px-2 py-1 flex justify-center gap-2">
                   <button onClick={() => handleEdit(d)}>
                     <FaEdit className="text-blue-600 hover:text-blue-800" />

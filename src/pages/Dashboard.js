@@ -341,15 +341,19 @@ import {
 } from "recharts";
 import { Link } from "react-router-dom";
 
-const attendanceData = [
-  { date: "Oct 1", present: 45, absent: 5 },
-  { date: "Oct 2", present: 42, absent: 8 },
-  { date: "Oct 3", present: 47, absent: 3 },
-  { date: "Oct 4", present: 40, absent: 10 },
-  { date: "Oct 5", present: 44, absent: 6 },
-  { date: "Oct 6", present: 48, absent: 2 },
-  { date: "Oct 7", present: 46, absent: 4 },
+const monthlyAttendanceData = [
+  { month: "Jan", present: 22, absent: 3 },
+  { month: "Feb", present: 20, absent: 5 },
+  { month: "Mar", present: 23, absent: 2 },
+  { month: "Apr", present: 21, absent: 4 },
+  { month: "May", present: 24, absent: 1 },
+  { month: "Jun", present: 22, absent: 3 },
+  { month: "Jul", present: 20, absent: 5 },
+  { month: "Aug", present: 23, absent: 2 },
+  { month: "Sep", present: 21, absent: 4 },
+  { month: "Oct", present: 24, absent: 1 },
 ];
+
 
 // Dummy summary stats
 const totalUsers = 120;
@@ -497,14 +501,15 @@ const Dashboard = () => {
       </div>
 
       {/* Attendance Chart */}
+
       <div className="bg-white rounded-xl shadow-md p-6 mb-8">
         <h3 className="text-lg font-semibold mb-4 text-[#281f5f]">
-          Weekly Attendance Trend
+          Monthly Attendance Trend
         </h3>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={attendanceData}>
+          <LineChart data={monthlyAttendanceData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
+            <XAxis dataKey="month" />
             <YAxis />
             <Tooltip />
             <Line
@@ -524,6 +529,8 @@ const Dashboard = () => {
           </LineChart>
         </ResponsiveContainer>
       </div>
+
+
 
       {/* Recent Activity Table */}
       <div className="bg-white rounded-xl shadow-md p-6">
@@ -554,13 +561,12 @@ const Dashboard = () => {
                 <td className="px-4 py-2">{activity.user}</td>
                 <td className="px-4 py-2">{activity.dept}</td>
                 <td
-                  className={`px-4 py-2 font-medium ${
-                    activity.status === "Present"
-                      ? "text-green-600"
-                      : activity.status === "Leave"
+                  className={`px-4 py-2 font-medium ${activity.status === "Present"
+                    ? "text-green-600"
+                    : activity.status === "Leave"
                       ? "text-yellow-600"
                       : "text-red-600"
-                  }`}
+                    }`}
                 >
                   {activity.status}
                 </td>

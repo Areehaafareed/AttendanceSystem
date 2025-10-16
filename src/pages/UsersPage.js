@@ -1,7 +1,6 @@
-// import axios from "axios";
 
 
-// import React, { useState } from "react";
+// import React, { useState, useEffect } from "react";
 // import {
 //   FaFingerprint,
 //   FaUserCircle,
@@ -12,70 +11,99 @@
 //   FaTrash,
 // } from "react-icons/fa";
 // import { useNavigate } from "react-router-dom";
-// import userDataJson from "../data/mockUserData.js";
+// import api from "../api/api.js";
 
 // const UsersPage = () => {
-//   const [users, setUsers] = useState(userDataJson);
+//   const [users, setUsers] = useState([]);
 //   const [search, setSearch] = useState("");
 //   const [formUser, setFormUser] = useState(null);
 //   const [showForm, setShowForm] = useState(false);
-//    const [isEdit, setIsEdit] = useState(false);
+//   const [isEdit, setIsEdit] = useState(false);
 //   const navigate = useNavigate();
 
+//   // ✅ Fetch users on page load
+//   useEffect(() => {
+//     fetchUsers();
+//   }, []);
+
+//   const fetchUsers = async () => {
+//     try {
+//       const response = await api.get("https://jsonplaceholder.typicode.com/todos/1")
+//       setUsers(response.data);
+//     } catch (error) {
+//       console.error("Error fetching users:", error);
+//       alert("Failed to load users from server.");
+//     }
+//   };
 
 //   const filteredUsers = users.filter(
 //     (user) =>
-//       user.FullName.toLowerCase().includes(search.toLowerCase()) ||
-//       user.Email.toLowerCase().includes(search.toLowerCase()) ||
-//       user.PF_Number.toString().includes(search)
+//       user.fullName?.toLowerCase().includes(search.toLowerCase()) ||
+//       user.email?.toLowerCase().includes(search.toLowerCase()) ||
+//       user.pF_Number?.toString().includes(search)
 //   );
 
-//   const handleDelete = (id) => {
+//   const handleDelete = async (id) => {
 //     if (window.confirm("Are you sure you want to delete this user?")) {
-//       setUsers(users.filter((u) => u.UserID !== id));
+//       try {
+//         await api.delete(`/users/${id}`);
+//         setUsers(users.filter((u) => u.userID !== id));
+//         alert("User deleted successfully");
+//       } catch (error) {
+//         console.error("Delete failed:", error);
+//         alert("Failed to delete user");
+//       }
 //     }
 //   };
 
 //   const handleEdit = (user) => {
-//      setIsEdit(true);
+//     setIsEdit(true);
 //     setFormUser(user);
 //     setShowForm(true);
 //   };
 
 //   const handleAdd = () => {
-//        setIsEdit(false); 
+//     setIsEdit(false);
 //     setFormUser({
-//       UserID: users.length + 1,
-//       PF_Number: "",
-//       FullName: "",
-//       DepartmentID: "",
-//       Designation: "",
-//       CardNumber: "",
-//       Email: "",
-//       Group: "",
-//       AccessGroup: "",
-//       Status: "Active",
-//       StartDateTime: "",
-//       EndDateTime: "",
-//       OperatorLevel: "",
-//       ShiftType: "",
-//       Fingerprint: "",
-//       FaceTemplate: "",
-//       VisualFace: "",
-//       QRCode: "",
-//       LastSyncDate: "",
+//       userID: "",
+//       pF_Number: "",
+//       fullName: "",
+//       designation: "",
+//       departmentId: "",
+//       cardNumber: "",
+//       email: "",
+//       group: "",
+//       accessGroup: "",
+//       status: "Active",
+//       startDateTime: "",
+//       endDateTime: "",
+//       lastSyncDate: "",
+//       operatorLevel: "",
+//       shiftType: "",
+//       fingerprint: "",
+//       faceTemplate: "",
+//       visualFace: "",
+//       qrCode: "",
 //     });
 //     setShowForm(true);
 //   };
 
-//   const handleFormSubmit = (e) => {
+//   const handleFormSubmit = async (e) => {
 //     e.preventDefault();
-//     if (formUser.UserID && users.find((u) => u.UserID === formUser.UserID)) {
-//       setUsers(users.map((u) => (u.UserID === formUser.UserID ? formUser : u)));
-//     } else {
-//       setUsers([...users, { ...formUser, UserID: users.length + 1 }]);
+//     try {
+//       if (isEdit) {
+//         await api.put(`/users/${formUser.userID}`, formUser);
+//         alert("User updated successfully");
+//       } else {
+//         await api.post("/users", formUser);
+//         alert("User added successfully");
+//       }
+//       fetchUsers(); // Refresh user list
+//       setShowForm(false);
+//     } catch (error) {
+//       console.error("Save failed:", error);
+//       alert("Failed to save user");
 //     }
-//     setShowForm(false);
 //   };
 
 //   return (
@@ -100,7 +128,7 @@
 //         </div>
 //       </div>
 
-//       {/* User Form Modal */}
+//       {/* Form Modal */}
 //       {showForm && (
 //         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
 //           <div className="bg-white rounded-lg p-6 w-96 shadow-lg max-h-[90vh] overflow-y-auto">
@@ -109,12 +137,12 @@
 //             </h2>
 //             <form onSubmit={handleFormSubmit} className="space-y-3">
 //               {Object.keys(formUser).map((field) =>
-//                 field !== "UserID" ? (
+//                 field !== "userID" ? (
 //                   <input
 //                     key={field}
 //                     type="text"
 //                     placeholder={field}
-//                     value={formUser[field]}
+//                     value={formUser[field] || ""}
 //                     onChange={(e) =>
 //                       setFormUser({ ...formUser, [field]: e.target.value })
 //                     }
@@ -145,68 +173,66 @@
 //       {/* Table */}
 //       <div className="overflow-x-auto border rounded">
 //         <table className="min-w-full text-xs border-collapse">
-//          <thead className="bg-gray-100 border-b text-left">
-//   <tr>
-//     {[
-//       "ID",
-//       "PF_Number",
-//       "FullName",
-//       "DepartmentID",
-//       "Designation",
-//       "CardNumber",
-//       "Email",
-//       "Group",
-//       "AccessGroup",
-//       "Status",
-//       "StartDateTime",
-//       "EndDateTime",
-//       "OperatorLevel",
-//       "ShiftType",
-//       "Fingerprint",
-//       "FaceTemplate",
-//       "VisualFace",
-//       "QRCode",
-//       "LastSyncDate",
-//       "Actions",
-//     ].map((header) => (
-//       <th
-//         key={header}
-//         className="px-2 py-2 border-r font-semibold text-gray-700 text-center"
-//       >
-//         {header === "Fingerprint" ? (
-//           <FaFingerprint className="inline bg-gray-100  text-lg" />
-//         ) : header === "FaceTemplate" ? (
-//           <FaUserCircle className="inline bg-gray-100  text-lg" />
-//         ) : header === "VisualFace" ? (
-//           <FaCheckCircle className="inline bg-gray-100  text-lg" />
-//         ) : header === "QRCode" ? (
-//           <FaQrcode className="inline bg-gray-100  text-lg" />
-//         ) : (
-//           header
-//         )}
-//       </th>
-//     ))}
-//   </tr>
-// </thead>
+//           <thead className="bg-gray-100 border-b text-left">
+//             <tr>
+//               {[
+//                 "userID",
+//                 "pF_Number",
+//                 "fullName",
+//                 "departmentId",
+//                 "designation",
+//                 "cardNumber",
+//                 "email",
+//                 "group",
+//                 "accessGroup",
+//                 "status",
+//                 "startDateTime",
+//                 "endDateTime",
+//                 "operatorLevel",
+//                 "shiftType",
+//                 "fingerprint",
+//                 "faceTemplate",
+//                 "visualFace",
+//                 "qrCode",
+//                 "lastSyncDate",
+//                 "Actions",
+//               ].map((header) => (
+//                 <th
+//                   key={header}
+//                   className="px-2 py-2 border-r font-semibold text-gray-700 text-center"
+//                 >
+//                   {header === "Fingerprint" ? (
+//                     <FaFingerprint className="inline bg-gray-100  text-lg" />
+//                   ) : header === "FaceTemplate" ? (
+//                     <FaUserCircle className="inline bg-gray-100  text-lg" />
+//                   ) : header === "VisualFace" ? (
+//                     <FaCheckCircle className="inline bg-gray-100  text-lg" />
+//                   ) : header === "QRCode" ? (
+//                     <FaQrcode className="inline bg-gray-100  text-lg" />
+//                   ) : (
+//                     header
+//                   )}
+//                 </th>
+//               ))}
+//             </tr>
+//           </thead>
 
 //           <tbody>
 //             {filteredUsers.map((user, index) => (
 //               <tr
-//                 key={user.UserID}
-//                 className={`border-b hover:bg-gray-50 transition ${
-//                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
-//                 }`}
+//                 key={user.userID}
+//                 className={`border-b hover:bg-gray-50 transition ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+//                   }`}
 //               >
 //                 {Object.keys(user).map((key) => (
 //                   <td
 //                     key={key}
-//                     className={`px-2 py-1 ${
-//                       key === "FullName"
+//                     className={`px-2 py-1 ${key === "fullName"
 //                         ? "text-[#281f5f] font-semibold cursor-pointer hover:underline"
 //                         : ""
-//                     }`}
+//                       }`}
 //                     onClick={() =>
-//                       key === "FullName" && navigate(`/user/${user.UserID}`)
+//                       key === "fullName" && navigate(`/user/${user.userID}`)
 //                     }
 //                   >
 //                     {user[key]}
@@ -216,7 +242,7 @@
 //                   <button onClick={() => handleEdit(user)}>
 //                     <FaEdit className="text-blue-600 hover:text-blue-800" />
 //                   </button>
-//                   <button onClick={() => handleDelete(user.UserID)}>
+//                   <button onClick={() => handleDelete(user.userID)}>
 //                     <FaTrash className="text-red-600 hover:text-red-800" />
 //                   </button>
 //                 </td>
@@ -231,6 +257,9 @@
 
 // export default UsersPage;
 
+
+
+
 import React, { useState, useEffect } from "react";
 import {
   FaFingerprint,
@@ -242,7 +271,6 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import api from "../api/api.js";
 
 const UsersPage = () => {
   const [users, setUsers] = useState([]);
@@ -252,38 +280,60 @@ const UsersPage = () => {
   const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
 
-  // ✅ Fetch users on page load
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
+ 
+useEffect(() => {
   const fetchUsers = async () => {
     try {
-      const response = await api.get("http://localhost:5000/biostar/users")
-      setUsers(response.data);
+      const response = await fetch("http://localhost:8094/biostar/users");
+      if (!response.ok) {
+        throw new Error("Failed to fetch users");
+      }
+      const data = await response.json();
+
+    
+      const mappedData = data.map((user) => ({
+        UserID: user.userID,
+        PF_Number: user.pF_Number,
+        FullName: user.fullName,
+        DepartmentID: user.departmentId,
+        Designation: user.designation,
+        CardNumber: user.cardNumber,
+        Email: user.email,
+        Group: user.group || "N/A",
+        AccessGroup: user.accessGroup || "N/A",
+        Status: user.status,
+        StartDateTime: user.startDateTime,
+        EndDateTime: user.endDateTime,
+        OperatorLevel: user.operatorLevel,
+        ShiftType: user.shiftType,
+        Fingerprint: user.fingerprint,
+        FaceTemplate: user.faceTemplate,
+        VisualFace: user.visualFace,
+        QRCode: user.qrCode,
+        LastSyncDate: user.lastSyncDate,
+      }));
+
+      setUsers(mappedData);
     } catch (error) {
       console.error("Error fetching users:", error);
       alert("Failed to load users from server.");
     }
   };
 
+  fetchUsers();
+}, []);
+
+
   const filteredUsers = users.filter(
     (user) =>
-      user.fullName?.toLowerCase().includes(search.toLowerCase()) ||
-      user.email?.toLowerCase().includes(search.toLowerCase()) ||
-      user.pF_Number?.toString().includes(search)
+      user.FullName.toLowerCase().includes(search.toLowerCase()) ||
+      user.Email.toLowerCase().includes(search.toLowerCase()) ||
+      user.PF_Number.toString().includes(search)
   );
 
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
-      try {
-        await api.delete(`/users/${id}`);
-        setUsers(users.filter((u) => u.userID !== id));
-        alert("User deleted successfully");
-      } catch (error) {
-        console.error("Delete failed:", error);
-        alert("Failed to delete user");
-      }
+      setUsers(users.filter((u) => u.UserID !== id));
     }
   };
 
@@ -296,45 +346,37 @@ const UsersPage = () => {
   const handleAdd = () => {
     setIsEdit(false);
     setFormUser({
-      userID: "",
-      pF_Number: "",
-      fullName: "",
-      designation: "",
-      departmentId: "",
-      cardNumber: "",
-      email: "",
-      group: "",
-      accessGroup: "",
-      status: "Active",
-      startDateTime: "",
-      endDateTime: "",
-      lastSyncDate: "",
-      operatorLevel: "",
-      shiftType: "",
-      fingerprint: "",
-      faceTemplate: "",
-      visualFace: "",
-      qrCode: "",
+      UserID: users.length + 1,
+      PF_Number: "",
+      FullName: "",
+      DepartmentID: "",
+      Designation: "",
+      CardNumber: "",
+      Email: "",
+      Group: "",
+      AccessGroup: "",
+      Status: "Active",
+      StartDateTime: "",
+      EndDateTime: "",
+      OperatorLevel: "",
+      ShiftType: "",
+      Fingerprint: "",
+      FaceTemplate: "",
+      VisualFace: "",
+      QRCode: "",
+      LastSyncDate: "",
     });
     setShowForm(true);
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
-    try {
-      if (isEdit) {
-        await api.put(`/users/${formUser.userID}`, formUser);
-        alert("User updated successfully");
-      } else {
-        await api.post("/users", formUser);
-        alert("User added successfully");
-      }
-      fetchUsers(); // Refresh user list
-      setShowForm(false);
-    } catch (error) {
-      console.error("Save failed:", error);
-      alert("Failed to save user");
+    if (formUser.UserID && users.find((u) => u.UserID === formUser.UserID)) {
+      setUsers(users.map((u) => (u.UserID === formUser.UserID ? formUser : u)));
+    } else {
+      setUsers([...users, { ...formUser, UserID: users.length + 1 }]);
     }
+    setShowForm(false);
   };
 
   return (
@@ -359,7 +401,7 @@ const UsersPage = () => {
         </div>
       </div>
 
-      {/* Form Modal */}
+      {/* User Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-96 shadow-lg max-h-[90vh] overflow-y-auto">
@@ -368,12 +410,12 @@ const UsersPage = () => {
             </h2>
             <form onSubmit={handleFormSubmit} className="space-y-3">
               {Object.keys(formUser).map((field) =>
-                field !== "userID" ? (
+                field !== "UserID" ? (
                   <input
                     key={field}
                     type="text"
                     placeholder={field}
-                    value={formUser[field] || ""}
+                    value={formUser[field]}
                     onChange={(e) =>
                       setFormUser({ ...formUser, [field]: e.target.value })
                     }
@@ -407,25 +449,25 @@ const UsersPage = () => {
           <thead className="bg-gray-100 border-b text-left">
             <tr>
               {[
-                "userID",
-                "pF_Number",
-                "fullName",
-                "departmentId",
-                "designation",
-                "cardNumber",
-                "email",
-                "group",
-                "accessGroup",
-                "status",
-                "startDateTime",
-                "endDateTime",
-                "operatorLevel",
-                "shiftType",
-                "fingerprint",
-                "faceTemplate",
-                "visualFace",
-                "qrCode",
-                "lastSyncDate",
+                "ID",
+                "PF_Number",
+                "FullName",
+                "DepartmentID",
+                "Designation",
+                "CardNumber",
+                "Email",
+                "Group",
+                "AccessGroup",
+                "Status",
+                "StartDateTime",
+                "EndDateTime",
+                "OperatorLevel",
+                "ShiftType",
+                "Fingerprint",
+                "FaceTemplate",
+                "VisualFace",
+                "QRCode",
+                "LastSyncDate",
                 "Actions",
               ].map((header) => (
                 <th
@@ -433,13 +475,13 @@ const UsersPage = () => {
                   className="px-2 py-2 border-r font-semibold text-gray-700 text-center"
                 >
                   {header === "Fingerprint" ? (
-                    <FaFingerprint className="inline bg-gray-100  text-lg" />
+                    <FaFingerprint className="inline bg-gray-100 text-lg" />
                   ) : header === "FaceTemplate" ? (
-                    <FaUserCircle className="inline bg-gray-100  text-lg" />
+                    <FaUserCircle className="inline bg-gray-100 text-lg" />
                   ) : header === "VisualFace" ? (
-                    <FaCheckCircle className="inline bg-gray-100  text-lg" />
+                    <FaCheckCircle className="inline bg-gray-100 text-lg" />
                   ) : header === "QRCode" ? (
-                    <FaQrcode className="inline bg-gray-100  text-lg" />
+                    <FaQrcode className="inline bg-gray-100 text-lg" />
                   ) : (
                     header
                   )}
@@ -451,19 +493,21 @@ const UsersPage = () => {
           <tbody>
             {filteredUsers.map((user, index) => (
               <tr
-                key={user.userID}
-                className={`border-b hover:bg-gray-50 transition ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                  }`}
+                key={user.UserID}
+                className={`border-b hover:bg-gray-50 transition ${
+                  index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                }`}
               >
                 {Object.keys(user).map((key) => (
                   <td
                     key={key}
-                    className={`px-2 py-1 ${key === "fullName"
+                    className={`px-2 py-1 ${
+                      key === "FullName"
                         ? "text-[#281f5f] font-semibold cursor-pointer hover:underline"
                         : ""
-                      }`}
+                    }`}
                     onClick={() =>
-                      key === "fullName" && navigate(`/user/${user.userID}`)
+                      key === "FullName" && navigate(`/user/${user.UserID}`)
                     }
                   >
                     {user[key]}
@@ -473,7 +517,7 @@ const UsersPage = () => {
                   <button onClick={() => handleEdit(user)}>
                     <FaEdit className="text-blue-600 hover:text-blue-800" />
                   </button>
-                  <button onClick={() => handleDelete(user.userID)}>
+                  <button onClick={() => handleDelete(user.UserID)}>
                     <FaTrash className="text-red-600 hover:text-red-800" />
                   </button>
                 </td>

@@ -242,7 +242,7 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import api from "../api/api.js"; // ✅ Import your Axios instance
+import api from "../api/api.js";
 
 const UsersPage = () => {
   const [users, setUsers] = useState([]);
@@ -259,7 +259,7 @@ const UsersPage = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await api.get("http://localhost:5204/biostar/users")
+      const response = await api.get("http://localhost:5000/biostar/users")
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);

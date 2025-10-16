@@ -395,12 +395,12 @@ const CircularProgress = ({ size = 60, strokeWidth = 6, progress }) => {
 
 const usageStats = [
   { icon: <FaUser className="text-[#281f5f]" />, label: "User", count: 76, maxCount: 100, link: "/users" },
-  { icon: <FaSmile className="text-[#281f5f]" />, label: "Visual Face", count: 30, maxCount: 100, link: "/visual-face" },
-  { icon: <FaFingerprint className="text-[#281f5f]" />, label: "Fingerprint", count: 45, maxCount: 100, link: "/fingerprint" },
-  { icon: <FaIdCard className="text-[#281f5f]" />, label: "Card", count: 116, maxCount: 200, link: "/card" },
-  { icon: <FaMobileAlt className="text-[#281f5f]" />, label: "Device", count: 49, maxCount: 100, link: "/device" },
-  { icon: <FaDoorOpen className="text-[#281f5f]" />, label: "Door", count: 0, maxCount: 100, link: "/door" },
-  { icon: <FaUsers className="text-[#281f5f]" />, label: "Access Group", count: 0, maxCount: 100, link: "/access-group" },
+  { icon: <FaSmile className="text-[#281f5f]" />, label: "Visual Face", count: 30, maxCount: 100,  },
+  { icon: <FaFingerprint className="text-[#281f5f]" />, label: "Fingerprint", count: 45, maxCount: 100,  },
+  { icon: <FaIdCard className="text-[#281f5f]" />, label: "Card", count: 116, maxCount: 200,  },
+  { icon: <FaMobileAlt className="text-[#281f5f]" />, label: "Device", count: 49, maxCount: 100,  },
+  { icon: <FaDoorOpen className="text-[#281f5f]" />, label: "Door", count: 0, maxCount: 100, },
+  { icon: <FaUsers className="text-[#281f5f]" />, label: "Access Group", count: 0, maxCount: 100,  },
 ];
 
 const Dashboard = () => {

@@ -1,15 +1,27 @@
+// import axios from "axios";
+
 
 // import React, { useState } from "react";
-// import { FaFingerprint, FaUserCircle, FaQrcode, FaCheckCircle, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+// import {
+//   FaFingerprint,
+//   FaUserCircle,
+//   FaQrcode,
+//   FaCheckCircle,
+//   FaPlus,
+//   FaEdit,
+//   FaTrash,
+// } from "react-icons/fa";
 // import { useNavigate } from "react-router-dom";
-// import userDataJson from "../data/mockUserData.js"; // move your current data into a new file for clarity
+// import userDataJson from "../data/mockUserData.js";
 
 // const UsersPage = () => {
 //   const [users, setUsers] = useState(userDataJson);
 //   const [search, setSearch] = useState("");
 //   const [formUser, setFormUser] = useState(null);
 //   const [showForm, setShowForm] = useState(false);
+//    const [isEdit, setIsEdit] = useState(false);
 //   const navigate = useNavigate();
+
 
 //   const filteredUsers = users.filter(
 //     (user) =>
@@ -25,11 +37,13 @@
 //   };
 
 //   const handleEdit = (user) => {
+//      setIsEdit(true);
 //     setFormUser(user);
 //     setShowForm(true);
 //   };
 
 //   const handleAdd = () => {
+//        setIsEdit(false); 
 //     setFormUser({
 //       UserID: users.length + 1,
 //       PF_Number: "",
@@ -41,6 +55,15 @@
 //       Group: "",
 //       AccessGroup: "",
 //       Status: "Active",
+//       StartDateTime: "",
+//       EndDateTime: "",
+//       OperatorLevel: "",
+//       ShiftType: "",
+//       Fingerprint: "",
+//       FaceTemplate: "",
+//       VisualFace: "",
+//       QRCode: "",
+//       LastSyncDate: "",
 //     });
 //     setShowForm(true);
 //   };
@@ -80,19 +103,25 @@
 //       {/* User Form Modal */}
 //       {showForm && (
 //         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-//           <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
-//             <h2 className="text-lg font-bold mb-4 text-[#281f5f]">{formUser.UserID ? "Edit User" : "Add User"}</h2>
+//           <div className="bg-white rounded-lg p-6 w-96 shadow-lg max-h-[90vh] overflow-y-auto">
+//             <h2 className="text-lg font-bold mb-4 text-[#281f5f]">
+//               {isEdit ? "Edit User" : "Add User"}
+//             </h2>
 //             <form onSubmit={handleFormSubmit} className="space-y-3">
-//               {["FullName", "PF_Number", "Email", "Designation", "DepartmentID", "CardNumber"].map((field) => (
-//                 <input
-//                   key={field}
-//                   type="text"
-//                   placeholder={field}
-//                   value={formUser[field]}
-//                   onChange={(e) => setFormUser({ ...formUser, [field]: e.target.value })}
-//                   className="border rounded px-2 py-1 w-full text-sm"
-//                 />
-//               ))}
+//               {Object.keys(formUser).map((field) =>
+//                 field !== "UserID" ? (
+//                   <input
+//                     key={field}
+//                     type="text"
+//                     placeholder={field}
+//                     value={formUser[field]}
+//                     onChange={(e) =>
+//                       setFormUser({ ...formUser, [field]: e.target.value })
+//                     }
+//                     className="border rounded px-2 py-1 w-full text-sm"
+//                   />
+//                 ) : null
+//               )}
 //               <div className="flex justify-end gap-2 mt-3">
 //                 <button
 //                   type="button"
@@ -101,7 +130,10 @@
 //                 >
 //                   Cancel
 //                 </button>
-//                 <button type="submit" className="bg-[#281f5f] text-white px-3 py-1 rounded">
+//                 <button
+//                   type="submit"
+//                   className="bg-[#281f5f] text-white px-3 py-1 rounded"
+//                 >
 //                   Save
 //                 </button>
 //               </div>
@@ -112,39 +144,75 @@
 
 //       {/* Table */}
 //       <div className="overflow-x-auto border rounded">
-//         <table className="min-w-full text-sm border-collapse">
-//           <thead className="bg-gray-100 border-b text-left">
-//             <tr>
-//               <th className="px-2 py-1 border-r">ID</th>
-//               <th className="px-2 py-1 border-r">PF#</th>
-//               <th className="px-2 py-1 border-r">Name</th>
-//               <th className="px-2 py-1 border-r">Dept</th>
-//               <th className="px-2 py-1 border-r">Designation</th>
-//               <th className="px-2 py-1 border-r">Email</th>
-//               <th className="px-2 py-1 border-r">Status</th>
-//               <th className="px-2 py-1 border-r text-center">Actions</th>
-//             </tr>
-//           </thead>
+//         <table className="min-w-full text-xs border-collapse">
+//          <thead className="bg-gray-100 border-b text-left">
+//   <tr>
+//     {[
+//       "ID",
+//       "PF_Number",
+//       "FullName",
+//       "DepartmentID",
+//       "Designation",
+//       "CardNumber",
+//       "Email",
+//       "Group",
+//       "AccessGroup",
+//       "Status",
+//       "StartDateTime",
+//       "EndDateTime",
+//       "OperatorLevel",
+//       "ShiftType",
+//       "Fingerprint",
+//       "FaceTemplate",
+//       "VisualFace",
+//       "QRCode",
+//       "LastSyncDate",
+//       "Actions",
+//     ].map((header) => (
+//       <th
+//         key={header}
+//         className="px-2 py-2 border-r font-semibold text-gray-700 text-center"
+//       >
+//         {header === "Fingerprint" ? (
+//           <FaFingerprint className="inline bg-gray-100  text-lg" />
+//         ) : header === "FaceTemplate" ? (
+//           <FaUserCircle className="inline bg-gray-100  text-lg" />
+//         ) : header === "VisualFace" ? (
+//           <FaCheckCircle className="inline bg-gray-100  text-lg" />
+//         ) : header === "QRCode" ? (
+//           <FaQrcode className="inline bg-gray-100  text-lg" />
+//         ) : (
+//           header
+//         )}
+//       </th>
+//     ))}
+//   </tr>
+// </thead>
 
 //           <tbody>
 //             {filteredUsers.map((user, index) => (
 //               <tr
 //                 key={user.UserID}
-//                 className={`border-b hover:bg-gray-50 transition ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
+//                 className={`border-b hover:bg-gray-50 transition ${
+//                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
+//                 }`}
 //               >
-//                 <td className="px-2 py-1">{user.UserID}</td>
-//                 <td className="px-2 py-1">{user.PF_Number}</td>
-//                 <td
-//                   className="px-2 py-1 text-[#281f5f] cursor-pointer font-semibold hover:underline"
-//                   onClick={() => navigate(`/user/${user.UserID}`)}
-//                 >
-//                   {user.FullName}
-//                 </td>
-//                 <td className="px-2 py-1">{user.DepartmentID}</td>
-//                 <td className="px-2 py-1">{user.Designation}</td>
-//                 <td className="px-2 py-1">{user.Email}</td>
-//                 <td className="px-2 py-1">{user.Status}</td>
-//                 <td className="px-2 py-1 text-center flex justify-center gap-3">
+//                 {Object.keys(user).map((key) => (
+//                   <td
+//                     key={key}
+//                     className={`px-2 py-1 ${
+//                       key === "FullName"
+//                         ? "text-[#281f5f] font-semibold cursor-pointer hover:underline"
+//                         : ""
+//                     }`}
+//                     onClick={() =>
+//                       key === "FullName" && navigate(`/user/${user.UserID}`)
+//                     }
+//                   >
+//                     {user[key]}
+//                   </td>
+//                 ))}
+//                 <td className="px-2 py-1 flex justify-center gap-2">
 //                   <button onClick={() => handleEdit(user)}>
 //                     <FaEdit className="text-blue-600 hover:text-blue-800" />
 //                   </button>
@@ -163,8 +231,7 @@
 
 // export default UsersPage;
 
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaFingerprint,
   FaUserCircle,
@@ -175,70 +242,99 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import userDataJson from "../data/mockUserData.js";
+import api from "../api/api.js"; // ✅ Import your Axios instance
 
 const UsersPage = () => {
-  const [users, setUsers] = useState(userDataJson);
+  const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [formUser, setFormUser] = useState(null);
   const [showForm, setShowForm] = useState(false);
-   const [isEdit, setIsEdit] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
 
+  // ✅ Fetch users on page load
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await api.get("/users");
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      alert("Failed to load users from server.");
+    }
+  };
 
   const filteredUsers = users.filter(
     (user) =>
-      user.FullName.toLowerCase().includes(search.toLowerCase()) ||
-      user.Email.toLowerCase().includes(search.toLowerCase()) ||
-      user.PF_Number.toString().includes(search)
+      user.fullName?.toLowerCase().includes(search.toLowerCase()) ||
+      user.email?.toLowerCase().includes(search.toLowerCase()) ||
+      user.pF_Number?.toString().includes(search)
   );
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
-      setUsers(users.filter((u) => u.UserID !== id));
+      try {
+        await api.delete(`/users/${id}`);
+        setUsers(users.filter((u) => u.userID !== id));
+        alert("User deleted successfully");
+      } catch (error) {
+        console.error("Delete failed:", error);
+        alert("Failed to delete user");
+      }
     }
   };
 
   const handleEdit = (user) => {
-     setIsEdit(true);
+    setIsEdit(true);
     setFormUser(user);
     setShowForm(true);
   };
 
   const handleAdd = () => {
-       setIsEdit(false); 
+    setIsEdit(false);
     setFormUser({
-      UserID: users.length + 1,
-      PF_Number: "",
-      FullName: "",
-      DepartmentID: "",
-      Designation: "",
-      CardNumber: "",
-      Email: "",
-      Group: "",
-      AccessGroup: "",
-      Status: "Active",
-      StartDateTime: "",
-      EndDateTime: "",
-      OperatorLevel: "",
-      ShiftType: "",
-      Fingerprint: "",
-      FaceTemplate: "",
-      VisualFace: "",
-      QRCode: "",
-      LastSyncDate: "",
+      userID: "",
+      pF_Number: "",
+      fullName: "",
+      designation: "",
+      departmentId: "",
+      cardNumber: "",
+      email: "",
+      group: "",
+      accessGroup: "",
+      status: "Active",
+      startDateTime: "",
+      endDateTime: "",
+      lastSyncDate: "",
+      operatorLevel: "",
+      shiftType: "",
+      fingerprint: "",
+      faceTemplate: "",
+      visualFace: "",
+      qrCode: "",
     });
     setShowForm(true);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (formUser.UserID && users.find((u) => u.UserID === formUser.UserID)) {
-      setUsers(users.map((u) => (u.UserID === formUser.UserID ? formUser : u)));
-    } else {
-      setUsers([...users, { ...formUser, UserID: users.length + 1 }]);
+    try {
+      if (isEdit) {
+        await api.put(`/users/${formUser.userID}`, formUser);
+        alert("User updated successfully");
+      } else {
+        await api.post("/users", formUser);
+        alert("User added successfully");
+      }
+      fetchUsers(); // Refresh user list
+      setShowForm(false);
+    } catch (error) {
+      console.error("Save failed:", error);
+      alert("Failed to save user");
     }
-    setShowForm(false);
   };
 
   return (
@@ -263,7 +359,7 @@ const UsersPage = () => {
         </div>
       </div>
 
-      {/* User Form Modal */}
+      {/* Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-96 shadow-lg max-h-[90vh] overflow-y-auto">
@@ -272,12 +368,12 @@ const UsersPage = () => {
             </h2>
             <form onSubmit={handleFormSubmit} className="space-y-3">
               {Object.keys(formUser).map((field) =>
-                field !== "UserID" ? (
+                field !== "userID" ? (
                   <input
                     key={field}
                     type="text"
                     placeholder={field}
-                    value={formUser[field]}
+                    value={formUser[field] || ""}
                     onChange={(e) =>
                       setFormUser({ ...formUser, [field]: e.target.value })
                     }
@@ -308,68 +404,66 @@ const UsersPage = () => {
       {/* Table */}
       <div className="overflow-x-auto border rounded">
         <table className="min-w-full text-xs border-collapse">
-         <thead className="bg-gray-100 border-b text-left">
-  <tr>
-    {[
-      "ID",
-      "PF_Number",
-      "FullName",
-      "DepartmentID",
-      "Designation",
-      "CardNumber",
-      "Email",
-      "Group",
-      "AccessGroup",
-      "Status",
-      "StartDateTime",
-      "EndDateTime",
-      "OperatorLevel",
-      "ShiftType",
-      "Fingerprint",
-      "FaceTemplate",
-      "VisualFace",
-      "QRCode",
-      "LastSyncDate",
-      "Actions",
-    ].map((header) => (
-      <th
-        key={header}
-        className="px-2 py-2 border-r font-semibold text-gray-700 text-center"
-      >
-        {header === "Fingerprint" ? (
-          <FaFingerprint className="inline bg-gray-100  text-lg" />
-        ) : header === "FaceTemplate" ? (
-          <FaUserCircle className="inline bg-gray-100  text-lg" />
-        ) : header === "VisualFace" ? (
-          <FaCheckCircle className="inline bg-gray-100  text-lg" />
-        ) : header === "QRCode" ? (
-          <FaQrcode className="inline bg-gray-100  text-lg" />
-        ) : (
-          header
-        )}
-      </th>
-    ))}
-  </tr>
-</thead>
+          <thead className="bg-gray-100 border-b text-left">
+            <tr>
+              {[
+                "userID",
+                "pF_Number",
+                "fullName",
+                "departmentId",
+                "designation",
+                "cardNumber",
+                "email",
+                "group",
+                "accessGroup",
+                "status",
+                "startDateTime",
+                "endDateTime",
+                "operatorLevel",
+                "shiftType",
+                "fingerprint",
+                "faceTemplate",
+                "visualFace",
+                "qrCode",
+                "lastSyncDate",
+                "Actions",
+              ].map((header) => (
+                <th
+                  key={header}
+                  className="px-2 py-2 border-r font-semibold text-gray-700 text-center"
+                >
+                  {header === "Fingerprint" ? (
+                    <FaFingerprint className="inline bg-gray-100  text-lg" />
+                  ) : header === "FaceTemplate" ? (
+                    <FaUserCircle className="inline bg-gray-100  text-lg" />
+                  ) : header === "VisualFace" ? (
+                    <FaCheckCircle className="inline bg-gray-100  text-lg" />
+                  ) : header === "QRCode" ? (
+                    <FaQrcode className="inline bg-gray-100  text-lg" />
+                  ) : (
+                    header
+                  )}
+                </th>
+              ))}
+            </tr>
+          </thead>
 
           <tbody>
             {filteredUsers.map((user, index) => (
               <tr
-                key={user.UserID}
-                className={`border-b hover:bg-gray-50 transition ${
-                  index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                }`}
+                key={user.userID}
+                className={`border-b hover:bg-gray-50 transition ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                  }`}
               >
                 {Object.keys(user).map((key) => (
                   <td
                     key={key}
-                    className={`px-2 py-1 ${
-                      key === "FullName"
+                    className={`px-2 py-1 ${key === "fullName"
                         ? "text-[#281f5f] font-semibold cursor-pointer hover:underline"
                         : ""
-                    }`}
+                      }`}
                     onClick={() =>
-                      key === "FullName" && navigate(`/user/${user.UserID}`)
+                      key === "fullName" && navigate(`/user/${user.userID}`)
                     }
                   >
                     {user[key]}
@@ -379,7 +473,7 @@ const UsersPage = () => {
                   <button onClick={() => handleEdit(user)}>
                     <FaEdit className="text-blue-600 hover:text-blue-800" />
                   </button>
-                  <button onClick={() => handleDelete(user.UserID)}>
+                  <button onClick={() => handleDelete(user.userID)}>
                     <FaTrash className="text-red-600 hover:text-red-800" />
                   </button>
                 </td>

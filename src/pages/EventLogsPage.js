@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const EventLogPage = () => {
   const [eventLogs, setEventLogs] = useState([]);
@@ -44,14 +45,23 @@ const EventLogPage = () => {
       {/* Header */}
       <div className="flex justify-between items-center border-b pb-3 mb-3">
         <h2 className="font-bold text-[#281f5f] text-lg">Event Logs</h2>
-        <input
-          type="text"
-          placeholder="Search by user, device, or date..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="border px-3 py-2 rounded text-sm focus:outline-none focus:ring focus:ring-indigo-200"
-          style={{ width: "250px" }}
-        />
+        
+      
+       <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border px-3 py-2 rounded text-sm"
+          />
+          <Link
+            to="/reports/eventlogs"
+            className="bg-[#281f5f] text-white px-3 py-2 rounded-md hover:bg-[#3a2d8f]"
+          >
+            📄 Generate Report
+          </Link>
+        </div>
       </div>
 
       {/* Status Messages */}
@@ -64,14 +74,17 @@ const EventLogPage = () => {
           <table className="min-w-full text-sm border-collapse">
             <thead className="bg-gray-100 border-b text-left">
               <tr>
-                <th className="px-4 py-2 border-r">Event ID</th>
+                <th className="px-4 py-2 border-r">Log ID</th>
                 <th className="px-4 py-2 border-r">Date</th>
-                <th className="px-4 py-2 border-r">Door</th>
+                <th className="px-4 py-2 border-r">User ID</th>
                 <th className="px-4 py-2 border-r">Device ID</th>
-                <th className="px-4 py-2 border-r">Device</th>
-                <th className="px-4 py-2 border-r">User Group</th>
+                <th className="px-4 py-2 border-r">Door ID</th>
+                <th className="px-4 py-2 border-r">Event ID</th>
+                <th className="px-4 py-2 border-r">Event Type</th>
+                <th className="px-4 py-2 border-r">Timestamp</th>
                 <th className="px-4 py-2 border-r">User</th>
-                <th className="px-4 py-2">Event</th>
+                <th className="px-4 py-2 border-r">User Group</th>
+                <th className="px-4 py-2">Is Posted</th>
               </tr>
             </thead>
             <tbody>
@@ -79,18 +92,22 @@ const EventLogPage = () => {
                 filteredEvents.map((event, index) => (
                   <tr
                     key={event.logID || index}
-                    className={`border-b hover:bg-gray-50 transition ${
-                      index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                    }`}
+                    className={`border-b hover:bg-gray-50 transition ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                      }`}
                   >
                     <td className="px-4 py-2">{event.logID}</td>
                     <td className="px-4 py-2">{event.date}</td>
-                    <td className="px-4 py-2">{event.doorID || "-"}</td>
+                     <td className="px-4 py-2">{event.userID}</td>
                     <td className="px-4 py-2">{event.deviceID}</td>
-                    <td className="px-4 py-2">{event.device || "-"}</td>
-                    <td className="px-4 py-2">{event.userGroup}</td>
-                    <td className="px-4 py-2">{event.user}</td>
+                    <td className="px-4 py-2">{event.doorID || "-"}</td>
+                    <td className="px-4 py-2">{event.eventID}</td>
                     <td className="px-4 py-2">{event.eventType}</td>
+                    <td className="px-4 py-2">{event.timestamp}</td>
+                    <td className="px-4 py-2">{event.user}</td>
+                    <td className="px-4 py-2">{event.userGroup}</td>
+
+                    <td className="px-4 py-2">{event.isPosted  ? "Yes" : "No"}</td>
+
                   </tr>
                 ))
               ) : (
@@ -109,3 +126,6 @@ const EventLogPage = () => {
 };
 
 export default EventLogPage;
+
+
+
